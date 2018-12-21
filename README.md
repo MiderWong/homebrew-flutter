@@ -41,5 +41,8 @@ If you're located in China, please follow：
 
 After installed,run the following command to see if there are any platform dependencies you need to complete the setup:
 
-  `flutter doctor`
+
+  ```shell
+  $ flutter doctor
+  ```
   
