@@ -1,6 +1,5 @@
 class Flutter < Formula
-  require "nokogiri"
-  require "open-uri"
+  require 'json'
   desc "Homebrew shell for Flutter"
   homepage "https://flutter.io"
 
@@ -17,14 +16,13 @@ class Flutter < Formula
   bottle :unneeded
 
   def install
-    document = Nokogiri::HTML.parse(open("http://www.cip.cc"))
-    ipaddress = document.xpath("//div[contains(@class, 'data')]//pre").text.force_encoding("utf-8")
-    ipaddress_cn = ipaddress.include?("中国".force_encoding("utf-8"))
-    ipaddress_macao = ipaddress.include?("澳门".force_encoding("utf-8"))
-    ipaddress_hk = ipaddress.include?("香港".force_encoding("utf-8"))
-    ipaddress_taiwan = ipaddress.include?("台湾".force_encoding("utf-8"))
+    current_ip = `curl http://api.db-ip.com/v2/free/self/ipAddress`
+    ip_address_url = 'http://api.db-ip.com/v2/free/'.concat(current_ip)
+    ip_address = `curl #{ip_address_url}`
+    ip_address_hash = JSON.parse ip_address
+    country_code = ip_address_hash["countryCode"]
 
-    if (ipaddress_cn == true) && (ipaddress_macao == false) && (ipaddress_hk == false) && (ipaddress_taiwan == false)
+    if (country_code == "CN")
       opoo "You are located in China"
       ENV["PUB_HOSTED_URL"] = "https://pub.flutter-io.cn"
       ENV["FLUTTER_STORAGE_BASE_URL"] = "https://storage.flutter-io.cn"
